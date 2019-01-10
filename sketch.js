@@ -1,12 +1,13 @@
 
-let totalPopulation = 10;
-let riskOfMutation = 0.01;
+let totalPopulation = 5;
+let riskOfMutation = 0.03;
 
 let matingPool = [];
 let cities = [];
 let population = [];
 let leadingDNA;
 
+let averageFitness = 0;
 let highestFitness = 0;
 let generations = 0;
 
@@ -26,7 +27,6 @@ function setup() {
 function draw() {
 	background(51);
 	frameRate(1);
-
 	strokeWeight(1)
 	for(let city of cities){
         fill(255);
@@ -37,10 +37,11 @@ function draw() {
 		stroke(100);
 		ellipse(city.x, city.y, 10);
 	}
+	let totalFitness = 0;
 	for(let i = 0; i < population.length; i++){
 		population[i].calcFitness();
-
-		if(population[i].fitness > highestFitness){
+		totalFitness += population[i].fitness;
+		if(population[i].fitness >= highestFitness){
 			highestFitness = population[i].fitness;
 			console.log("Higher fitness found: " + population[i].fitness);
 			console.log("DNA: " + JSON.stringify(population[i]));
@@ -49,11 +50,11 @@ function draw() {
 
 		}
 	}
-
+	averageFitness = totalFitness / population.length;
 	matingPool = [];
 	// Push into matingPool
 	for(let i = 0; i < population.length; i++){
-		let element = Math.floor(population[i].fitness);
+		let element = Math.floor(population[i].fitness / 100);
 		for (let x = 0; x < element; x++) {
 			matingPool.push(population[i]);
 		}
@@ -80,7 +81,10 @@ function draw() {
                 x1 = cities[leadingDNA.genes[i]].x;
                 x2 = cities[leadingDNA.genes[i + 1]].x;
                 y1 = cities[leadingDNA.genes[i]].y;
-                y2 = cities[leadingDNA.genes[i + 1]].y;
+				y2 = cities[leadingDNA.genes[i + 1]].y;
+				strokeWeight(0.5);
+				text(leadingDNA.distanceApart.toString(), 50, 50);
+
                 fill(color('#00ff00'));
 				stroke(color('#00ff00'));
 				strokeWeight(5);
@@ -88,4 +92,7 @@ function draw() {
             }
         }
 	}
+	
+	strokeWeight(1);
+	text(floor(averageFitness), 10, 10);
 }

@@ -26,6 +26,7 @@ class DNA{
         this.genes = new Array(citiesIn.length);
         this.fitness = 0;
         this.lineValues = [];
+        this.distanceApart = 0;
         for(let i = 0; i < citiesIn.length; i++){
             this.citiesUse.push(i);
         }
@@ -36,7 +37,7 @@ class DNA{
     calcFitness(){
         let totalTravelDistance = 0;
         let score = 0;
-        let minDistance = 100000;
+        let minDistance = 500;
         let maxDistance = 0;
 
         for(let i = 0; i < this.genes.length; i++){
@@ -53,30 +54,47 @@ class DNA{
                 line(x1, y1, x2, y2);
                 let distance = int(dist(x1, x2, y1, y2));
                 if(distance > maxDistance) maxDistance = distance;
+                if(minDistance === 0) minDistance = distance;
                 if(distance < minDistance) minDistance = distance;
+
                 totalTravelDistance += distance;
             }
         }
+        this.distanceApart = totalTravelDistance;
+        score = totalTravelDistance * (- 1);
+        console.log(score);
+        score = floor(convertRange( score, [ minDistance, maxDistance ], [ -10, 0 ] ));
+        score *= -1;
+        console.log(score);
 
-        score = totalTravelDistance * - 1;
-        score = floor(convertRange( score, [ minDistance, maxDistance ], [ 0, 1 ] ));
-        score += 23;
+        console.log("---------");
         this.fitness = score;
     }
     crossOver(partner){
         let Child = new DNA(cities);
-        let midPoint = floor(random(this.genes.length));
-        for(let i = 0; i < this.genes.length; i++){
-            if(i < midPoint) Child.genes[i] = this.genes[i];
-            else Child.genes[i] = partner.genes[i];
+
+        let partStart = floor(random(this.genes.length));
+        let partEnd = floor(random(partStart + 1, this.genes.length));
+
+        let newOrder = this.genes.slice(partStart, partEnd);
+        for(let i = 0; i < partner.genes.length; i++){
+            if(!newOrder.includes(partner.genes[i])){
+                newOrder.push(partner.genes[i]);
+            }
         }
+        Child.genes = newOrder;
         return Child;
     }
     mutate(rate){
         for(let i = 0; i < this.genes.length; i++){
-            if(Math.random() < rate){
-                this.totalMutations += 1;
-                this.genes[i] = floor(random(this.genes.length));
+            if(random(0,1) < rate){
+
+                let numberSwapped = floor(random(this.genes.length));
+                // Swap           
+                let tmp = this.genes[i];
+                this.genes[i] = this.genes[numberSwapped];
+                this.genes[numberSwapped] = tmp;
+
             }
         }
     }
