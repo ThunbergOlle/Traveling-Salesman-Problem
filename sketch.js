@@ -1,6 +1,6 @@
 
-let totalPopulation = 5;
-let riskOfMutation = 0.03;
+let totalPopulation = 50;
+let riskOfMutation = 0.01;
 
 let matingPool = [];
 let cities = [];
@@ -9,6 +9,7 @@ let leadingDNA;
 
 let averageFitness = 0;
 let highestFitness = 0;
+
 let generations = 0;
 
 function setup() {
@@ -16,7 +17,7 @@ function setup() {
 	background(51);
 	// Initialize routes
 
-	for(let i = 0; i < 10; i++){
+	for(let i = 0; i < 8; i++){
 		cities.push({x: random(width), y: random(height), order: i});
 	}
 	for(let i = 0; i < totalPopulation; i++){
@@ -26,7 +27,6 @@ function setup() {
 
 function draw() {
 	background(51);
-	frameRate(1);
 	strokeWeight(1)
 	for(let city of cities){
         fill(255);
@@ -41,7 +41,11 @@ function draw() {
 	for(let i = 0; i < population.length; i++){
 		population[i].calcFitness();
 		totalFitness += population[i].fitness;
-		if(population[i].fitness >= highestFitness){
+
+	}
+	for(let i = 0; i < population.length; i++){
+		population[i].normalizeFitness(totalFitness);
+		if(population[i].fitness > highestFitness){
 			highestFitness = population[i].fitness;
 			console.log("Higher fitness found: " + population[i].fitness);
 			console.log("DNA: " + JSON.stringify(population[i]));
@@ -54,7 +58,7 @@ function draw() {
 	matingPool = [];
 	// Push into matingPool
 	for(let i = 0; i < population.length; i++){
-		let element = Math.floor(population[i].fitness / 100);
+		let element = Math.floor(population[i].fitness);
 		for (let x = 0; x < element; x++) {
 			matingPool.push(population[i]);
 		}
@@ -68,7 +72,6 @@ function draw() {
 		
 		parentA = matingPool[p1];
 		parentB = matingPool[p2];
-
 		let newChild = parentA.crossOver(parentB);
 		newChild.mutate(riskOfMutation);
 		population[i] = newChild;

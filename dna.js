@@ -1,3 +1,4 @@
+let cost = 2;
 function shuffleArr(arr) {
     var currentI = arr.length, temporaryValue, randomIndex;
   
@@ -36,7 +37,6 @@ class DNA{
 
     calcFitness(){
         let totalTravelDistance = 0;
-        let score = 0;
         let minDistance = 500;
         let maxDistance = 0;
 
@@ -60,22 +60,18 @@ class DNA{
                 totalTravelDistance += distance;
             }
         }
-        this.distanceApart = totalTravelDistance;
-        score = totalTravelDistance * (- 1);
-        console.log(score);
-        score = floor(convertRange( score, [ minDistance, maxDistance ], [ -10, 0 ] ));
-        score *= -1;
-        console.log(score);
-
-        console.log("---------");
-        this.fitness = score;
+        
+        this.fitness = 1 / (pow(totalTravelDistance, 2) + 1);
+        console.log(this.fitness);
+    }
+    normalizeFitness(totalFitness){
+          this.fitness = this.fitness / totalFitness;
     }
     crossOver(partner){
         let Child = new DNA(cities);
 
         let partStart = floor(random(this.genes.length));
         let partEnd = floor(random(partStart + 1, this.genes.length));
-
         let newOrder = this.genes.slice(partStart, partEnd);
         for(let i = 0; i < partner.genes.length; i++){
             if(!newOrder.includes(partner.genes[i])){
