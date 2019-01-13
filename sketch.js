@@ -1,6 +1,6 @@
 
-let totalPopulation = 50;
-let riskOfMutation = 0.05;
+let totalPopulation = 100;
+let riskOfMutation = 0.04;
 
 let matingPool = [];
 let cities = [];
@@ -60,6 +60,11 @@ function draw() {
 			console.log("Higher fitness found: " + population[i].fitness);
 			console.log("DNA: " + JSON.stringify(population[i]));
 			leadingDNA = population[i];
+			theChart.data.labels.push(generations);
+			theChart.data.datasets.forEach((dataset) => {
+				dataset.data.push(population[i].distanceApart);
+			});
+			theChart.update();
 			console.log(leadingDNA);
 
 		}
@@ -103,9 +108,10 @@ function draw() {
                 line(x1, y1, x2, y2);
             }
 		}
+
+		}
+		
 		leadingDNADistance.html("Leading DNA distance:	" + leadingDNA.distanceApart.toString());
 		leadingDNAOrder.html("Leading DNA order:	" + leadingDNA.genes.toString());
-
-	}
 
 }

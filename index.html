@@ -9,6 +9,7 @@
 
 	<script src="libraries/p5.js"></script>
 	<script src="libraries/p5.dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 	<script src="libraries/p5.sound.js"></script>
 	<script src="dna.js"></script>
 	<script src="sketch.js"></script>
@@ -23,7 +24,15 @@
 			margin:auto;
 		}
 	</style>
+	
 </head>
+
 <body>
+
+		<div style="position: absolute; float: right; right: 10%;">
+				<canvas id="line-chart" style="float: right;" width="500" height="500"></canvas>
+		</div>
+		<script src="charts.js"></script>
+
 </body>
 </html>
