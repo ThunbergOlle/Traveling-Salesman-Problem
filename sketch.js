@@ -1,6 +1,6 @@
 
 let totalPopulation = 50;
-let riskOfMutation = 0.01;
+let riskOfMutation = 0.05;
 
 let matingPool = [];
 let cities = [];
@@ -12,12 +12,19 @@ let highestFitness = 0;
 
 let generations = 0;
 
+// TEXT VARIABLES
+let leadingDNADistance, leadingDNAOrder;
+
+
 function setup() {
 	createCanvas(500, 500);
 	background(51);
 	// Initialize routes
 
-	for(let i = 0; i < 8; i++){
+	leadingDNADistance = createElement("p", "Leading DNA distance: ");
+	leadingDNAOrder = createElement("p", "Leading DNA order: ");
+
+	for(let i = 0; i < 12; i++){
 		cities.push({x: random(width), y: random(height), order: i});
 	}
 	for(let i = 0; i < totalPopulation; i++){
@@ -43,8 +50,11 @@ function draw() {
 		totalFitness += population[i].fitness;
 
 	}
+	
+
 	for(let i = 0; i < population.length; i++){
 		population[i].normalizeFitness(totalFitness);
+
 		if(population[i].fitness > highestFitness){
 			highestFitness = population[i].fitness;
 			console.log("Higher fitness found: " + population[i].fitness);
@@ -54,10 +64,9 @@ function draw() {
 
 		}
 	}
-	averageFitness = totalFitness / population.length;
-	matingPool = [];
 	// Push into matingPool
 	for(let i = 0; i < population.length; i++){
+
 		let element = Math.floor(population[i].fitness);
 		for (let x = 0; x < element; x++) {
 			matingPool.push(population[i]);
@@ -85,17 +94,18 @@ function draw() {
                 x2 = cities[leadingDNA.genes[i + 1]].x;
                 y1 = cities[leadingDNA.genes[i]].y;
 				y2 = cities[leadingDNA.genes[i + 1]].y;
-				strokeWeight(0.5);
-				text(leadingDNA.distanceApart.toString(), 50, 50);
-
+				strokeWeight(.5);
+				textSize(16);
+				
                 fill(color('#00ff00'));
 				stroke(color('#00ff00'));
 				strokeWeight(5);
                 line(x1, y1, x2, y2);
             }
-        }
+		}
+		leadingDNADistance.html("Leading DNA distance:	" + leadingDNA.distanceApart.toString());
+		leadingDNAOrder.html("Leading DNA order:	" + leadingDNA.genes.toString());
+
 	}
-	
-	strokeWeight(1);
-	text(floor(averageFitness), 10, 10);
+
 }

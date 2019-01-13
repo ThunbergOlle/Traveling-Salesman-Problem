@@ -40,32 +40,31 @@ class DNA{
         let minDistance = 500;
         let maxDistance = 0;
 
-        for(let i = 0; i < this.genes.length; i++){
-            if(i + 1 < this.genes.length){
-                let x1, x2, y1, y2;
-                x1 = cities[this.genes[i]].x;
-                x2 = cities[this.genes[i + 1]].x;
-                y1 = cities[this.genes[i]].y;
-                y2 = cities[this.genes[i + 1]].y;
+        for(let i = 0; i < this.genes.length - 1; i++){
 
-                this.lineValues = [x1, y1, x2, y2];
+                let city1, city2;
+                city1 = cities[this.genes[i]];
+                city2 = cities[this.genes[i + 1]];
+
+                this.lineValues = [city1.x, city1.y, city2.x, city2.y];
                 fill(100);
                 stroke(100);
-                line(x1, y1, x2, y2);
-                let distance = int(dist(x1, x2, y1, y2));
+                line(city1.x, city1.y, city2.x, city2.y);
+                let distance = int(dist(city1.x, city1.y, city2.x, city2.y));
                 if(distance > maxDistance) maxDistance = distance;
                 if(minDistance === 0) minDistance = distance;
                 if(distance < minDistance) minDistance = distance;
 
                 totalTravelDistance += distance;
-            }
         }
-        
-        this.fitness = 1 / (pow(totalTravelDistance, 2) + 1);
-        console.log(this.fitness);
+        this.distanceApart = totalTravelDistance;
+
+        totalTravelDistance = totalTravelDistance / 10;
+        this.fitness = 1 / (pow(totalTravelDistance, 8) + 1);
     }
     normalizeFitness(totalFitness){
           this.fitness = this.fitness / totalFitness;
+          this.fitness *= 100;
     }
     crossOver(partner){
         let Child = new DNA(cities);
